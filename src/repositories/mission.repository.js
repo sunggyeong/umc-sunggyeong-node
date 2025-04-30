@@ -7,9 +7,9 @@ export const addMission = async (data) => {
     await conn.beginTransaction();
 
     const [result] = await conn.query(
-      `INSERT INTO mission (user_id, store_id, target_amount, deadline, number)
-       VALUES (?, ?, ?, ?,?)`,
-      [data.user_id, data.store_id, data.target_amount, data.deadline, data.number]
+      `INSERT INTO mission (store_id, target_amount, deadline, number)
+       VALUES (?, ?, ?,?)`,
+      [data.store_id, data.target_amount, data.deadline, data.number]
     );
 
     await conn.commit();

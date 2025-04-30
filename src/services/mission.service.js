@@ -3,6 +3,7 @@ import * as missionRepository from '../repositories/mission.repository.js';
 import { responseFromMission } from '../dtos/mission.dto.js';
 
 export const createMission = async (data) => {
+  data.number = generateMissionNumber();
   const missionId = await missionRepository.addMission(data);
   const mission = await missionRepository.getMissionById(missionId);
   
@@ -12,3 +13,8 @@ export const createMission = async (data) => {
 
   return responseFromMission(mission);
 };
+// mission.service.js 내부
+export const generateMissionNumber = () => {
+  return Math.floor(100000 + Math.random() * 900000); // 100000 ~ 999999
+};
+
