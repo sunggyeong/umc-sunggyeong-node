@@ -3,6 +3,7 @@ import cors from 'cors';
 import { handleUserSignUp } from './controllers/user.controller.js'; 
 import { handleReviewPost } from './controllers/review.controller.js'; // 리뷰 등록 핸들러
 import { handleStorePost } from './controllers/store.controller.js'; // 가게 등록 핸들러
+import { handleMissionPost } from './controllers/mission.controller.js'; // 미션 등록 핸들러
 import dotev from 'dotenv';
 import express from 'express'          // -> ES Module
 
@@ -23,6 +24,7 @@ app.get('/', (req, res) => {
 app.post("/api/v1/users", handleUserSignUp);
 app.post("/api/v1/stores", handleStorePost); // 가게 등록 API
 app.post("/api/v1/reviews", handleReviewPost); // 리뷰 등록 AP
+app.post("/api/v1/missions", handleMissionPost); // 리뷰 등록 API
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
