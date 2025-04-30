@@ -53,8 +53,8 @@ export const getReview = async (reviewId) => {
     const conn = await pool.getConnection();
   
     try {
-      const [review] = await conn.query(`SELECT * FROM user WHERE id = ?`, [reviewId]);
-      return review.length > 0 ? riview[0] : null;
+      const [review] = await conn.query(`SELECT * FROM review WHERE id = ?`, [reviewId]);
+      return review.length > 0 ? review[0] : null;
     } catch (err) {
       throw new Error(`오류가 발생했어요. 요청 파라미터를 확인해주세요. (${err})`);
     } finally {

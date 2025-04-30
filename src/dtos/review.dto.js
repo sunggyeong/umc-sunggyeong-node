@@ -12,11 +12,11 @@ export const bodyToReview= (body) => {
 export const responseFromReview = (data) => {
     return {
       review: {
-        review_id: data.review.id,
+        id: data.id,
         user_id: data.user_id,
         store_id: data.store_id,
-        body: data.review.body,
-        rating: data.review.rating,
+        body: data.body,
+        rating: data.rating,
         visit_id: data.visit_id
       }
     };

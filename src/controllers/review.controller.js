@@ -7,7 +7,7 @@ import { StatusCodes } from 'http-status-codes';
 export const handleReviewPost = async (req, res, next) => {
   try {
     console.log("🔥 요청 body:", req.body);
-    const user = await createReview(bodyToReview(req.body));
+    const review = await createReview(bodyToReview(req.body));
 
     res.status(200).json({ result: review });
   } catch (err) {
