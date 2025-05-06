@@ -1,53 +1,35 @@
-import { pool } from "../db.config.js";
+import { prisma } from "../db.config.js";
 
+// ✅ 미션 도전 기록 추가
 export const addMissionProgress = async (data) => {
-  const conn = await pool.getConnection();
-  try {
-    await conn.beginTransaction();
+  const missionProgress = await prisma.missionProgress.create({
+    data: {
+      userId: data.userId,
+      missionId: data.missionId,
+      state: '도전중', 
+    },
+  });
 
-    const [result] = await conn.query(
-      `INSERT INTO mission_progress (user_id, mission_id, state)
-       VALUES (?, ?,  ?)`,
-      [data.user_id, data.mission_id, data.state]
-    );
-
-    await conn.commit();
-    return result.insertId;
-  } catch (err) {
-    await conn.rollback();
-    throw new Error(`mission_progress 저장 중 오류가 발생했어요. (${err.message})`);
-  } finally {
-    conn.release();
-  }
+  return missionProgress.id;
 };
 
+// ✅ ID로 미션 진행 조회
 export const getMissionProgressById = async (id) => {
-  const conn = await pool.getConnection();
-  try {
-    const [rows] = await conn.query(
-      `SELECT * FROM mission_progress WHERE id = ?`,
-      [id]
-    );
-    return rows[0] || null;
-  } catch (err) {
-    throw new Error(`mission_progress 조회 중 오류가 발생했어요. (${err.message})`);
-  } finally {
-    conn.release();
-  }
+  const progress = await prisma.missionProgress.findUnique({
+    where: { id },
+  });
+
+  return progress;
 };
 
+// ✅ 해당 미션에 대해 "도전중" 상태인 기록 1건 조회
 export const findActiveProgressByMissionId = async (missionId) => {
-    const conn = await pool.getConnection();
-    try {
-      const [rows] = await conn.query(
-        `SELECT * FROM mission_progress
-         WHERE mission_id = ? AND state = '도전중'
-         LIMIT 1`,
-        [missionId]
-      );
-      return rows[0] || null;
-    } finally {
-      conn.release();
-    }
-  };
-  
+  const progress = await prisma.missionProgress.findFirst({
+    where: {
+      missionId,
+      state: "도전중",
+    },
+  });
+
+  return progress;
+};

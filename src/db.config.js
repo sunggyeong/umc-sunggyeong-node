@@ -1,6 +1,7 @@
 import mysql from "mysql2/promise";
 import dotenv from "dotenv";
-
+import { PrismaClient } from './generated/prisma/index.js'; // 상대 경로는 너의 파일 위치에 따라 조정
+export const prisma = new PrismaClient();
 dotenv.config();
 
 export const pool = mysql.createPool({
@@ -15,3 +16,4 @@ export const pool = mysql.createPool({
   connectionLimit: 10, // 몇 개의 커넥션을 가지게끔 할 것인지
   queueLimit: 0, // getConnection에서 오류가 발생하기 전에 Pool에 대기할 요청의 개수 한도
 });
+

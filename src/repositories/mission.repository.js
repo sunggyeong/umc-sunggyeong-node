@@ -1,36 +1,28 @@
-import { pool } from "../db.config.js";
+import { prisma } from "../db.config.js";
 
+// ✅ 미션 추가
 export const addMission = async (data) => {
-  const conn = await pool.getConnection();
+  const mission = await prisma.mission.create({
+    data: {
+      storeId: data.storeId,
+      targetAmount: data.targetAmount,
+      deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7일 후
+      number: generateRandomNumber(),
+    },
+  });
 
-  try {
-    await conn.beginTransaction();
-
-    const [result] = await conn.query(
-      `INSERT INTO mission (store_id, target_amount, deadline, number)
-       VALUES (?, ?, ?,?)`,
-      [data.store_id, data.target_amount, data.deadline, data.number]
-    );
-
-    await conn.commit();
-    return result.insertId;
-  } catch (err) {
-    await conn.rollback();
-    throw new Error(`mission 저장 중 오류가 발생했어요. (${err.message})`);
-  } finally {
-    conn.release();
-  }
+  return mission.id;
 };
 
+// ✅ 미션 조회 by ID
 export const getMissionById = async (missionId) => {
-  const conn = await pool.getConnection();
+  const mission = await prisma.mission.findUnique({
+    where: { id: missionId },
+  });
 
-  try {
-    const [rows] = await conn.query(`SELECT * FROM mission WHERE id = ?`, [missionId]);
-    return rows[0] || null;
-  } catch (err) {
-    throw new Error(`mission 조회 중 오류가 발생했어요. (${err.message})`);
-  } finally {
-    conn.release();
-  }
+  return mission;
 };
+
+function generateRandomNumber() {
+  return Math.floor(100000 + Math.random() * 900000); // 100000 ~ 999999 사이 숫자
+}

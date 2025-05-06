@@ -1,23 +1,48 @@
-export const bodyToReview= (body) => {
-  
-    return {
-        user_id: body.user_id,
-        store_id: body.store_id,
-        body: body.body,
-        rating: body.rating,
-        visit_id: body.visit_id
-    };
+export const bodyToReview = (body) => {
+  return {
+    userId: body.user_id,
+    storeId: body.store_id,
+    body: body.body,
+    rating: body.rating,
+    visitId: body.visit_id
   };
-// 서비스 결과 → 응답 포맷으로 변환
+};
+
+// 단일 리뷰 응답
 export const responseFromReview = (data) => {
+  return {
+    review: {
+      id: data.id.toString(),
+      userId: data.user_id.toString(),
+      storeId: data.store_id.toString(),
+      visitId: data.visit_id.toString(),
+      body: data.body,
+      rating: data.rating,
+      createdAt: data.createdAt,
+      updatedAt: data.updatedAt
+    }
+  };
+};
+
+  export const responseFromReviews = (reviews) => {
     return {
-      review: {
-        id: data.id,
-        user_id: data.user_id,
-        store_id: data.store_id,
-        body: data.body,
-        rating: data.rating,
-        visit_id: data.visit_id
-      }
+      data: reviews.map((review) => ({
+        id: review.id.toString(),
+        content: review.body,
+        rating: review.rating,
+        createdAt: review.createdAt,
+        user: {
+          id: review.user.id.toString(),
+          name: review.user.name,
+        },
+        store: {
+          id: review.store.id.toString(),
+          name: review.store.name,
+        },
+      })),
+      pagination: {
+        cursor: reviews.length ? reviews[reviews.length - 1].id.toString() : null,
+      },
     };
   };
+  

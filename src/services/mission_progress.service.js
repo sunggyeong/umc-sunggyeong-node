@@ -4,15 +4,15 @@ import * as missionProgressRepository from '../repositories/mission_progress.rep
 import { responseFromProgress } from '../dtos/mission_progress.dto.js';
 
 export const createMissionProgress = async (data) => {
-    const activeProgress = await missionProgressRepository.findActiveProgressByMissionId(data.mission_id);
+    const activeProgress = await missionProgressRepository.findActiveProgressByMissionId(data.missionId);
   
     // 다른 사람이 이미 도전중이면 금지
-    if (activeProgress && activeProgress.user_id !== data.user_id) {
+    if (activeProgress && activeProgress.userId !== data.userId) {
       throw new Error('이미 다른 사용자가 도전 중인 미션입니다.');
     }
   
     // 본인이 이미 도전중이면 무시 (중복 INSERT 방지)
-    if (activeProgress && activeProgress.user_id === data.user_id) {
+    if (activeProgress && activeProgress.userId === data.userId) {
       return responseFromProgress(activeProgress);
     }
   
