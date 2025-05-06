@@ -1,0 +1,165 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                BigInt   @id @default(autoincrement())
+  email             String   @unique(map: "email") @db.VarChar(40)
+  name              String   @db.VarChar(20)
+  gender            String   @db.VarChar(10)
+  birth             DateTime @db.Date
+  address           String   @db.VarChar(40)
+  detailAddress     String?  @map("detail_address") @db.VarChar(255)
+  phoneNumber       String   @map("phone_number") @db.VarChar(15)
+  point             Int      @default(0)
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @default(now()) @updatedAt @map("updated_at")
+  phoneVerification Boolean  @default(false) @map("phone_verification")
+  userTermsId       BigInt   @unique @map("user_terms_id") // 1:1을 위한 unique 제약
+
+  userTerms         UserTerms         @relation(fields: [userTermsId], references: [id])
+  prefers           Prefer[]
+  reviews           Review[]
+  visits            Visit[]
+  missionProgresses MissionProgress[]
+
+  @@map("user")
+}
+
+model UserTerms {
+  id           BigInt   @id @default(autoincrement())
+  locationChk  Boolean  @map("location_chk")
+  marketingChk Boolean  @map("marketing_chk")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @default(now()) @updatedAt @map("updated_at")
+
+  user User? @relation()
+
+  @@map("user_terms")
+}
+
+model FoodCategory {
+  id        BigInt   @id @default(autoincrement())
+  name      String   @db.VarChar(20)
+  state     Boolean
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+  prefers   Prefer[]
+  stores    Store[]
+
+  @@map("food_category")
+}
+
+model Prefer {
+  id             BigInt   @id @default(autoincrement())
+  userId         BigInt   @map("user_id")
+  foodCategoryId BigInt   @map("food_category_id")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @default(now()) @updatedAt
+
+  user         User         @relation(fields: [userId], references: [id])
+  foodCategory FoodCategory @relation(fields: [foodCategoryId], references: [id])
+
+  @@unique([userId, foodCategoryId]) // 중복 방지하려면 추가
+  @@map("prefer")
+}
+
+model Store {
+  id         BigInt   @id @default(autoincrement())
+  name       String   @map("store_name") @db.VarChar(100)
+  address    String   @db.VarChar(255)
+  regionId   BigInt   @map("region_id")
+  categoryId BigInt   @map("category_id")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
+
+  region   Region       @relation(fields: [regionId], references: [id])
+  category FoodCategory @relation(fields: [categoryId], references: [id])
+  visits   Visit[]
+  reviews  Review[]
+  missions Mission[]
+
+  @@map("store")
+}
+
+model Region {
+  id        BigInt   @id @default(autoincrement())
+  name      String   @db.VarChar(50)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  stores Store[] // Store와 1:N 관계
+}
+
+model Review {
+  id        BigInt   @id @default(autoincrement())
+  userId    BigInt   @map("user_id")
+  storeId   BigInt   @map("store_id")
+  visitId   BigInt   @map("visit_id")
+  body      String   @db.Text
+  rating    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  user  User  @relation(fields: [userId], references: [id])
+  store Store @relation(fields: [storeId], references: [id])
+  visit Visit @relation(fields: [visitId], references: [id])
+
+  @@map("review")
+}
+
+model Visit {
+  id        BigInt   @id @default(autoincrement())
+  userId    BigInt   @map("user_id")
+  storeId   BigInt   @map("store_id")
+  visitedAt DateTime @default(now())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  user    User     @relation(fields: [userId], references: [id])
+  store   Store    @relation(fields: [storeId], references: [id])
+  reviews Review[]
+
+  @@map("visit")
+}
+
+model Mission {
+  id           BigInt   @id @default(autoincrement())
+  storeId      BigInt   @map("store_id")
+  targetAmount Int      @map("target_amount")
+  deadline     DateTime
+  number       Int
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @default(now()) @updatedAt
+
+  store             Store             @relation(fields: [storeId], references: [id])
+  missionProgresses MissionProgress[]
+
+  @@map("mission")
+}
+
+model MissionProgress {
+  id        BigInt   @id @default(autoincrement())
+  userId    BigInt   @map("user_id")
+  missionId BigInt   @map("mission_id")
+  state     String   @db.VarChar(20)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  user    User    @relation(fields: [userId], references: [id])
+  mission Mission @relation(fields: [missionId], references: [id])
+
+  @@map("mission_progress")
+}
