@@ -24,25 +24,25 @@ export const responseFromReview = (data) => {
   };
 };
 
-  export const responseFromReviews = (reviews) => {
-    return {
-      data: reviews.map((review) => ({
-        id: review.id.toString(),
-        content: review.body,
-        rating: review.rating,
-        createdAt: review.createdAt,
-        user: {
-          id: review.user.id.toString(),
-          name: review.user.name,
-        },
-        store: {
-          id: review.store.id.toString(),
-          name: review.store.name,
-        },
-      })),
-      pagination: {
-        cursor: reviews.length ? reviews[reviews.length - 1].id.toString() : null,
+export const responseFromReviews = (reviews) => {
+  return {
+    data: reviews.map((review) => ({
+      id: review.id.toString(),
+      content: review.body,
+      rating: review.rating,
+      createdAt: review.createdAt,
+      user: {
+        id: review.user?.id?.toString() ?? null,
+        name: review.user?.name ?? "알 수 없음",
       },
-    };
+      store: {
+        id: review.store?.id?.toString() ?? null,
+        name: review.store?.name ?? "알 수 없음",
+      },
+    })),
+    pagination: {
+      cursor: reviews.length ? reviews[reviews.length - 1].id.toString() : null,
+    },
   };
+};
   
