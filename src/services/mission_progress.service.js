@@ -2,7 +2,7 @@
 
 import * as missionProgressRepository from '../repositories/mission_progress.repository.js';
 import { responseFromProgress } from '../dtos/mission_progress.dto.js';
-
+import { responseFromInProgressMissions } from '../dtos/mission_progress.dto.js';
 export const createMissionProgress = async (data) => {
     const activeProgress = await missionProgressRepository.findActiveProgressByMissionId(data.missionId);
   
@@ -24,5 +24,9 @@ export const createMissionProgress = async (data) => {
   
     const newProgress = await missionProgressRepository.getMissionProgressById(id);
     return responseFromProgress(newProgress);
+  };
+  export const listInProgressMissions = async (userId, cursor) => {
+    const results = await missionProgressRepository.getInProgressMissionsByUser(userId, cursor);
+    return responseFromInProgressMissions(results);
   };
   

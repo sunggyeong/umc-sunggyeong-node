@@ -33,3 +33,27 @@ export const findActiveProgressByMissionId = async (missionId) => {
 
   return progress;
 };
+// 도전중 미션 목록 커서 기반 조회
+export const getInProgressMissionsByUser = async (userId, cursor) => {
+  return await prisma.missionProgress.findMany({
+    where: {
+      userId: BigInt(userId),
+      state: "도전중",
+      ...(cursor && { id: { gt: BigInt(cursor) } }),
+    },
+    take: 5,
+    orderBy: { id: "asc" },
+    include: {
+      mission: {
+        include: {
+          store: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+        },
+      },
+    },
+  });
+};

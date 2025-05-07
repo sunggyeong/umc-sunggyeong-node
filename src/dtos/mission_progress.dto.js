@@ -18,3 +18,22 @@ export const responseFromProgress = (data) => {
     }
   };
 };
+export const responseFromInProgressMissions = (progressList) => {
+  return {
+    data: progressList.map((progress) => ({
+      id: progress.id.toString(),
+      missionId: progress.missionId.toString(),
+      state: progress.state,
+      store: {
+        id: progress.mission.store.id.toString(),
+        name: progress.mission.store.name,
+      },
+      createdAt: progress.createdAt,
+    })),
+    pagination: {
+      cursor: progressList.length > 0
+        ? progressList[progressList.length - 1].id.toString()
+        : null,
+    },
+  };
+};
