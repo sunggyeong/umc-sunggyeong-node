@@ -19,3 +19,19 @@ export const responseFromMission = (data) => {
     }
   };
 };
+export const responseFromMissions = (missions) => {
+  return {
+    data: missions.map((mission) => ({
+      id: mission.id.toString(),
+      number: mission.number,
+      targetAmount: mission.targetAmount,
+      deadline: mission.deadline,
+      store: {
+        name: mission.store?.name ?? '',
+      },
+    })),
+    pagination: {
+      cursor: missions.length ? missions[missions.length - 1].id.toString() : null,
+    },
+  };
+};

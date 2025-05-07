@@ -1,8 +1,8 @@
 import express from 'express';
-import { bodyToMission , responseFromMission } from '../dtos/mission.dto.js';
+import { bodyToMission  } from '../dtos/mission.dto.js';
 import { createMission } from '../services/mission.service.js';
 import { StatusCodes } from 'http-status-codes';
-
+import { listMissionsByStore } from '../services/mission.service.js';
 
 export const handleMissionPost = async (req, res, next) => {
   try {
@@ -14,5 +14,15 @@ export const handleMissionPost = async (req, res, next) => {
     console.error("🔥 handleReview 에러:", err);
 
     next(err); // 반드시 next로 에러 넘겨야 전역 핸들러로 감
+  }
+};
+export const handleListMissionsByStore = async (req, res, next) => {
+  try {
+    const storeId = req.params.storeId;
+    const result = await listMissionsByStore(storeId);
+    res.status(StatusCodes.OK).json(result);
+  } catch (err) {
+    console.error("🔥 handleListMissionsByStore 에러:", err);
+    next(err);
   }
 };

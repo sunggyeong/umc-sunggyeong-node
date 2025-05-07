@@ -23,6 +23,27 @@ export const getMissionById = async (missionId) => {
   return mission;
 };
 
+// ✅ 특정 가게의 모든 미션 조회
+export const getMissionsByStoreId = async (storeId, cursor) => {
+  return await prisma.mission.findMany({
+    where: {
+      storeId: BigInt(storeId),
+      ...(cursor && { id: { gt: BigInt(cursor) } }),
+    },
+    take: 5,
+    orderBy: {
+      id: 'asc',
+    },
+    include: {
+      store: {
+        select: {
+          name: true,
+        },
+      },
+    },
+  });
+};
+
 function generateRandomNumber() {
   return Math.floor(100000 + Math.random() * 900000); // 100000 ~ 999999 사이 숫자
 }

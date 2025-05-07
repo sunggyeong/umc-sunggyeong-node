@@ -7,6 +7,7 @@ import { handleMissionPost } from './controllers/mission.controller.js'; // 미�
 import { handleMissionProgressPost } from './controllers/mission_progress.controller.js'; // 미션 진행 등록 핸들러
 import { handleListStoreReviews } from './controllers/review.controller.js'; // 가게 리뷰 목록 조회 핸들러
 import { handleListUserReviews}  from './controllers/review.controller.js'; //유저 리뷰 목록 조회 핸들러
+import { handleListMissionsByStore } from './controllers/mission.controller.js'; // 가게 미션 목록 조회 핸들러
 import dotev from 'dotenv';
 import express from 'express'          // -> ES Module
 import { prisma } from './db.config.js'; // ← 여기가 핵심! 경로 맞춰야 함
@@ -30,7 +31,9 @@ app.post("/api/v1/reviews", handleReviewPost); // 리뷰 등록 AP
 app.post("/api/v1/missions", handleMissionPost); // 미션 등록 API
 app.post("/api/v1/missionProgress", handleMissionProgressPost); // 리뷰 등록 API
 app.get("/api/v1/stores/:storeId/reviews", handleListStoreReviews); // 가게 리뷰 목록 조회 API
-app.get("/api/v1/users/:userId/reviews", handleListUserReviews);
+app.get("/api/v1/users/:userId/reviews", handleListUserReviews);  // 유저 리뷰 목록 조회 API
+app.get("/api/v1/stores/:storeId/missions", handleListMissionsByStore);  // 가게 미션 목록 조회 API
+
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
