@@ -40,8 +40,8 @@ export const getUser = async (userId) => {
 export const getAllStoreReviews = async (storeId, cursor) => {
   const reviews = await prisma.review.findMany({
     where: {
-      storeId,
-      id: { gt: cursor },
+      storeId: BigInt(storeId),
+      ...(cursor && { id: { gt: BigInt(cursor) } }), // 커서가 있을 때만 필터링
     },
     take: 5,
     orderBy: {
@@ -62,8 +62,10 @@ export const getAllStoreReviews = async (storeId, cursor) => {
       },
     },
   });
+
   return reviews;
-}
+};
+
 export const getAllUserReviews = async (userId, cursor) => {
   const reviews = await prisma.review.findMany({
     where: {

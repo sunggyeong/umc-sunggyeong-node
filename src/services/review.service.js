@@ -3,7 +3,7 @@ import { responseFromReview } from '../dtos/review.dto.js';
 import { responseFromReviews } from '../dtos/review.dto.js';
 import * as reviewRepository from '../repositories/review.repository.js';
 import { getAllUserReviews } from '../repositories/review.repository.js';
-
+import { getAllStoreReviews } from '../repositories/review.repository.js';
 export const createReview = async (data) => {
     // 리뷰 등록
     const reviewId = await reviewRepository.addReview(data);
