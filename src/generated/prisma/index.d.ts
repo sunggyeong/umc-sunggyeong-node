@@ -12814,12 +12814,12 @@ export namespace Prisma {
 
   export type ReviewWhereUniqueInput = Prisma.AtLeast<{
     id?: bigint | number
+    visitId?: bigint | number
     AND?: ReviewWhereInput | ReviewWhereInput[]
     OR?: ReviewWhereInput[]
     NOT?: ReviewWhereInput | ReviewWhereInput[]
     userId?: BigIntFilter<"Review"> | bigint | number
     storeId?: BigIntFilter<"Review"> | bigint | number
-    visitId?: BigIntFilter<"Review"> | bigint | number
     body?: StringFilter<"Review"> | string
     rating?: IntFilter<"Review"> | number
     createdAt?: DateTimeFilter<"Review"> | Date | string
@@ -12827,7 +12827,7 @@ export namespace Prisma {
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     store?: XOR<StoreScalarRelationFilter, StoreWhereInput>
     visit?: XOR<VisitScalarRelationFilter, VisitWhereInput>
-  }, "id">
+  }, "id" | "visitId">
 
   export type ReviewOrderByWithAggregationInput = {
     id?: SortOrder

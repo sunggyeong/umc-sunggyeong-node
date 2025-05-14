@@ -9,7 +9,7 @@ export const handleMissionProgressPost = async (req, res, next) => {
     console.log("🔥 요청 body:", req.body);
     const mission_progress = await createMissionProgress(bodyToProgress(req.body));
 
-    res.status(200).json({ result: mission_progress });
+    res.status(StatusCodes.OK).success(mission_progress);
   } catch (err) {
     console.error("🔥 handleMissionProgress 에러:", err);
 
@@ -22,7 +22,7 @@ export const handleListInProgressMissions = async (req, res, next) => {
     const cursor = req.query.cursor || null;
 
     const result = await listInProgressMissions(userId, cursor);
-    res.status(200).json(result);
+    res.status(StatusCodes.OK).success(result);
   } catch (err) {
     next(err);
   }

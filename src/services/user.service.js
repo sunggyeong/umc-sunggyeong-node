@@ -1,27 +1,25 @@
 import { responseFromUser } from "../dtos/user.dto.js";
+import { bodyToUser } from "../dtos/user.dto.js";
 import {
   addUser,
   getUser,
   getUserPreferencesByUserId,
   setPreference,
 } from "../repositories/user.repository.js";
+import {DuplicateUserEmailError} from "../errors.js";
 
 export const userSignUp = async (body) => {
-  const joinUserId = await addUser({
-      name: body.name,
-      gender : body.gender,
-      birth:body.birth,
-      address: body.address,
-      email: body.email ,
-      location_ok: body.location_ok,
-      marketing_ok:body.marketing_ok,
-  });
+  const userDto = bodyToUser(body);  // ✅ DTO 매핑 적용
+
+  const joinUserId = await addUser(userDto);  // ✅ Prisma에 맞는 필드 구조
 
   if (joinUserId === null) {
-    throw new Error("이미 존재하는 이메일입니다.");
+    throw new DuplicateUserEmailError("이미 존재하는 이메일입니다.", {
+      email: body.email,
+    });
   }
 
-  for (const preference of body.preferences) {
+  for (const preference of userDto.preferences ?? []) {
     await setPreference(joinUserId, preference);
   }
 

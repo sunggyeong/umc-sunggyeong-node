@@ -1,4 +1,8 @@
 import { prisma } from "../db.config.js";
+// 꼭 .js 확장자까지!
+import MISSION_PROGRESS_STATE from '../constants/missionStates.js';
+
+
 
 // ✅ 미션 도전 기록 추가
 export const addMissionProgress = async (data) => {
@@ -6,11 +10,11 @@ export const addMissionProgress = async (data) => {
     data: {
       userId: data.userId,
       missionId: data.missionId,
-      state: '도전중', 
+      state: MISSION_PROGRESS_STATE.ACTIVE, 
     },
   });
 
-  return missionProgress.id;
+  return missionProgress;
 };
 
 // ✅ ID로 미션 진행 조회
@@ -27,7 +31,7 @@ export const findActiveProgressByMissionId = async (missionId) => {
   const progress = await prisma.missionProgress.findFirst({
     where: {
       missionId,
-      state: "도전중",
+      state: MISSION_PROGRESS_STATE.ACTIVE,
     },
   });
 
@@ -38,7 +42,7 @@ export const getInProgressMissionsByUser = async (userId, cursor) => {
   return await prisma.missionProgress.findMany({
     where: {
       userId: BigInt(userId),
-      state: "도전중",
+      state: MISSION_PROGRESS_STATE.ACTIVE,
       ...(cursor && { id: { gt: BigInt(cursor) } }),
     },
     take: 5,

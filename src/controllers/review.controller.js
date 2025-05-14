@@ -7,10 +7,9 @@ import { listUserReviews } from '../services/review.service.js';
 import { listStoreReviews } from '../services/review.service.js';
 export const handleReviewPost = async (req, res, next) => {
   try {
-    console.log("🔥 요청 body:", req.body);
     const review = await createReview(bodyToReview(req.body));
 
-    res.status(200).json({ result: review });
+    res.status(StatusCodes.OK).success(review);
   } catch (err) {
     console.error("🔥 handleReview 에러:", err);
 
@@ -25,7 +24,7 @@ export const handleListStoreReviews = async (req, res, next) => {
     const cursor = req.query.cursor ? parseInt(req.query.cursor) : 0;
 
     const result = await listStoreReviews(storeId, cursor);
-    res.status(200).json(result);
+    res.status(StatusCodes.OK).success(result);
   } catch (err) {
     next(err);
   }
@@ -37,7 +36,7 @@ export const handleListUserReviews = async (req, res, next) => {
     const cursor = req.query.cursor ? parseInt(req.query.cursor) : 0;
 
     const result = await listUserReviews(userId, cursor);
-    res.status(200).json(result);
+    res.status(StatusCodes.OK).success(result);
   } catch (err) {
     next(err);
   }

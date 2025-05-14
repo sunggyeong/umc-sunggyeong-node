@@ -1,11 +1,39 @@
 import { prisma } from "../db.config.js";
+import { ReviewVisitNotFoundError } from "../errors.js";
 
 // 리뷰 추가
+
 export const addReview = async (data) => {
   return await prisma.$transaction(async (tx) => {
-    // 유저 존재 여부 확인
-    const user = await tx.user.findUnique({ where: { id: data.userId } });
-    if (!user) throw new Error("존재하지 않는 사용자입니다.");
+
+    // 방문 내역 확인
+    const visit = await tx.visit.findUnique({ where: { id: data.visitId } });
+    if (!visit || visit.userId !== data.userId || visit.storeId !== data.storeId) {
+      throw new ReviewVisitNotFoundError(
+        "해당 방문 내역이 존재하지 않거나 이 사용자의 방문이 아닙니다.",
+        {
+          visitId: data.visitId,
+          userId: data.userId,
+          storeId: data.storeId,
+        }
+      );
+    }
+
+    //중복 리뷰 존재 여부 확인
+     const existingReview = await tx.review.findFirst({
+      where: { visitId: data.visitId },
+    });
+
+    if (existingReview) {
+      throw new ReviewAlreadyExistsError(
+        "해당 방문에 대한 리뷰는 이미 작성되었습니다.",
+        {
+          reviewId: existingReview.id,
+          visitId: data.visitId,
+        }
+      );
+    }
+
 
     // 리뷰 생성
     const review = await tx.review.create({
@@ -18,7 +46,7 @@ export const addReview = async (data) => {
       },
     });
 
-    return review.id;
+    return review;
   });
 };
 
