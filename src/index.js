@@ -13,6 +13,9 @@ import { handleListInProgressMissions } from './controllers/mission_progress.con
 import dotev from 'dotenv';
 import express from 'express'          // -> ES Module
 import { prisma } from './db.config.js'; // ← 여기가 핵심! 경로 맞춰야 함
+
+import swaggerAutogen from "swagger-autogen";
+import swaggerUiExpress from "swagger-ui-express";
 dotev.config();
 
 const app = express()
@@ -34,7 +37,40 @@ app.use(cors());
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+// ...
 
+app.use(
+  "/docs",
+  swaggerUiExpress.serve,
+  swaggerUiExpress.setup({}, {
+    swaggerOptions: {
+      url: "/openapi.json",
+    },
+  })
+);
+
+app.get("/openapi.json", async (req, res, next) => {
+  // #swagger.ignore = true
+  const options = {
+    openapi: "3.0.0",
+    disableLogs: true,
+    writeOutputFile: false,
+  };
+  const outputFile = "/dev/null"; // 파일 출력은 사용하지 않습니다.
+  const routes = ["./src/index.js"];
+  const doc = {
+    info: {
+      title: "UMC 7th",
+      description: "UMC 7th Node.js 테스트 프로젝트입니다.",
+    },
+    host: "localhost:3000",
+  };
+
+  const result = await swaggerAutogen(options)(outputFile, routes, doc);
+  res.json(result ? result.data : null);
+});
+
+// ...
 app.get('/', (req, res) => {
   res.send('Hello World!');
 })
