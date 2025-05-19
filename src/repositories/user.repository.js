@@ -42,7 +42,6 @@ export const addUser = async (data) => {
       return user.id;
     });
 
-
   
     return result;
   } catch (err) {

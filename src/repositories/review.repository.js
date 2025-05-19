@@ -1,5 +1,5 @@
 import { prisma } from "../db.config.js";
-import { ReviewVisitNotFoundError } from "../errors.js";
+import  * as errors from "../errors.js";
 
 // 리뷰 추가
 
@@ -9,7 +9,7 @@ export const addReview = async (data) => {
     // 방문 내역 확인
     const visit = await tx.visit.findUnique({ where: { id: data.visitId } });
     if (!visit || visit.userId !== data.userId || visit.storeId !== data.storeId) {
-      throw new ReviewVisitNotFoundError(
+      throw new NotExistsError(
         "해당 방문 내역이 존재하지 않거나 이 사용자의 방문이 아닙니다.",
         {
           visitId: data.visitId,
@@ -33,7 +33,6 @@ export const addReview = async (data) => {
         }
       );
     }
-
 
     // 리뷰 생성
     const review = await tx.review.create({

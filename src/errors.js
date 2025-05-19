@@ -1,30 +1,27 @@
+export class CustomError extends Error {
+  constructor(errorCode, reason, data) {
+    super(reason);
+    this.errorCode = errorCode;
+    this.reason = reason;
+    this.data = data;
+  }
+}
+
+export class NotExistsError extends CustomError {
+    constructor(reason, data = null) {
+        super(reason, "NOT_EXISTS", 404, data);
+    }
+}
+
 /*
 User 관련 오류
 */
 
 export class DuplicateUserEmailError extends Error {
-    errorCode = "U001";
-  
-    constructor(reason, data) {
-      super(reason);
-      this.reason = reason;
-      this.data = data;
+    constructor(reason, data= null) {
+      super(reason, "U001", 400 , data);
     }
   }
-
-
-/*
-mission 관련 오류
-*/
-  export class MissionNotFoundError extends Error {
-  errorCode = "M001";
-
-  constructor(reason , data = {}) {
-    super(reason);
-    this.reason = reason;
-    this.data = data;
-  }
-}
 
 
 /*
@@ -32,42 +29,22 @@ mission_progress 관련 오류
 */
 
   export class MissionAlreadyInProgressByAnotherUserError extends Error {
-    errorCode = "MP001";
-  constructor(reason, data) {
-      super(reason);
-      this.reason = reason;
-      this.data = data;
+    constructor(reason, data = null){
+      super(reason, "MP001", )
     }
 }
 
 export class MissionAlreadyInProgressBySameUserError extends Error {
-  errorCode = "MP002";
   constructor(reason, data) {
-      super(reason);
-      this.reason = reason;
-      this.data = data;
+      super(reason, "MP002");
     }
 }
 
 /*
-review 관련 오류
+Review 관련 에러
 */
-export class ReviewVisitNotFoundError extends Error {
-  errorCode = "R001";
-
-  constructor(reason = "방문 내역이 존재하지 않아 리뷰를 작성할 수 없습니다.", data = {}) {
-    super(reason);
-    this.reason = reason;
-    this.data = data;
-  }
-}
-
 export class ReviewAlreadyExistsError extends Error {
-  errorCode = "R002";
-
-  constructor(reason = "해당 방문에 대한 리뷰는 이미 존재합니다.", data = {}) {
-    super(reason);
-    this.reason = reason;
-    this.data = data;
+  constructor(reason, data){
+    super(reason, "R001");
   }
 }

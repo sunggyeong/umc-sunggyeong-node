@@ -2,7 +2,7 @@
 import * as missionRepository from '../repositories/mission.repository.js';
 import { responseFromMission } from '../dtos/mission.dto.js';
 import { responseFromMissions } from '../dtos/mission.dto.js';
-import { MissionNotFoundError } from '../errors.js';
+import * as error from '../errors.js';
 
 export const createMission = async (data) => {
   data.number = generateMissionNumber();
@@ -10,7 +10,7 @@ export const createMission = async (data) => {
   const mission = await missionRepository.getMissionById(missionId);
   
   if (!mission) {
-    throw new MissionNotFoundError("등록한 미션 정보를 찾을 수 없습니다.");
+    throw new NotExistsError("등록한 미션 정보를 찾을 수 없습니다.");
   }
 
   return responseFromMission(mission);
@@ -23,7 +23,7 @@ export const generateMissionNumber = () => {
 export const listMissionsByStore = async (storeId) => {
   const missions = await missionRepository.getMissionsByStoreId(storeId);
   if (missions.length === 0) {
-    throw new MissionNotFoundError("해당 가게에 등록된 미션이 없습니다.", {
+    throw new NotExistsError("해당 가게에 등록된 미션이 없습니다.", {
       storeId,
     });
   }

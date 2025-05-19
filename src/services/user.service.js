@@ -9,9 +9,9 @@ import {
 import {DuplicateUserEmailError} from "../errors.js";
 
 export const userSignUp = async (body) => {
-  const userDto = bodyToUser(body);  // ✅ DTO 매핑 적용
+  const userDto = bodyToUser(body);  //  DTO 매핑 적용
 
-  const joinUserId = await addUser(userDto);  // ✅ Prisma에 맞는 필드 구조
+  const joinUserId = await addUser(userDto);  // Prisma에 맞는 필드 구조
 
   if (joinUserId === null) {
     throw new DuplicateUserEmailError("이미 존재하는 이메일입니다.", {
