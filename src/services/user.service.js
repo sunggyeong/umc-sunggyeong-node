@@ -5,6 +5,8 @@ import {
   getUser,
   getUserPreferencesByUserId,
   setPreference,
+  updateUserById,
+  updateUserPreferences
 } from "../repositories/user.repository.js";
 import {DuplicateUserEmailError} from "../errors.js";
 
@@ -25,6 +27,19 @@ export const userSignUp = async (body) => {
 
   const user = await getUser(joinUserId);
   const preferences = await getUserPreferencesByUserId(joinUserId);
+
+  return responseFromUser({ user, preferences });
+};
+
+export const updateUser = async (userId, data) => {
+  await updateUserById(userId, data);
+
+  if (Array.isArray(data.preferences)) {
+    await updateUserPreferences(userId, data.preferences);
+  }
+
+  const user = await getUser(userId);
+  const preferences = await getUserPreferencesByUserId(userId);
 
   return responseFromUser({ user, preferences });
 };

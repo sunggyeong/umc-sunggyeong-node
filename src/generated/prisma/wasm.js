@@ -216,6 +216,13 @@ exports.Prisma.MissionProgressScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.SessionScalarFieldEnum = {
+  id: 'id',
+  sid: 'sid',
+  data: 'data',
+  expiresAt: 'expiresAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -256,6 +263,12 @@ exports.Prisma.MissionProgressOrderByRelevanceFieldEnum = {
   state: 'state'
 };
 
+exports.Prisma.SessionOrderByRelevanceFieldEnum = {
+  id: 'id',
+  sid: 'sid',
+  data: 'data'
+};
+
 
 exports.Prisma.ModelName = {
   User: 'User',
@@ -267,7 +280,8 @@ exports.Prisma.ModelName = {
   Review: 'Review',
   Visit: 'Visit',
   Mission: 'Mission',
-  MissionProgress: 'MissionProgress'
+  MissionProgress: 'MissionProgress',
+  Session: 'Session'
 };
 
 /**
